@@ -8,7 +8,7 @@ function contarVocales(texto){
     let cantidad_vocales = 0;
     for (let i = 0; i < texto.length; i++) {
         const letra = texto[i];
-        if(letra == "A" || letra == "E" || letra == "I" || letra == "O" || letra == "U" || letra == "a" || letra == "e" || letra == "i" || letra == "o" || letra == "u"){
+        if(letra == "A" || letra == "E" || letra == "I" || letra == "O" || letra == "U" || letra == "a" || letra == "e" || letra == "i" || letra == "o" || letra == "u" || letra == "á" || letra == "é" || letra == "í" || letra == "ó" || letra == "ú" || letra == "ü"){
             cantidad_vocales++;
         }
     }
