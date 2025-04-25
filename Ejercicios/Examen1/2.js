@@ -51,71 +51,105 @@ function esLetra(caracter){
     return false;
 }
 
+function esNumero(caracter){
+    let arrayNumeros = ["0","1","2","3","4","5","6","7","8","9"];
+    for (let i = 0; i < length(arrayNumeros); i++){
+        if(caracter === arrayNumeros[i]){
+            return true;
+        }
+    }
+    return false;
+}
+
+function split(string, separador){
+    let array = [];
+    let string_separado = "";
+    let contadorArray = 0;
+    for (let i = 0; i < length(string); i++){
+        const caracter = string[i];
+        if(caracter === separador){
+            if (string_separado != "") {
+                array[contadorArray] = string_separado;
+                string_separado = "";
+                contadorArray++;
+            } 
+        }else{
+            string_separado += caracter;
+        }
+    }
+    array[contadorArray] = string_separado;
+    return array;
+}
+
+function includes(array, elemento){
+    for (let i = 0; i < length(array); i++){
+        if(array[i] === elemento){
+            return true;
+        }
+    }
+    return false;
+}
+
 function validarEmail(email){
     const lengthEmail = length(email);
+    const email_separado = split(email,"@");
+    const email_parte1 = email_separado[0];
+    const email_parte2 = email_separado[1];
 
-    let cantidadArrobas = 0;
-    let puntoDespuesDeArroba = false;
-    let terminaEnEspecial = false;
-    let arrobaOPuntoComienzoFinal = false;
-
-    for (let j = 0; j < lengthEmail; j++) {
-        const caracterEmail = email[j];
-
-        if(j === 0 || j === lengthEmail){
-            if(caracterEmail === "@" || caracterEmail === "."){
-                arrobaOPuntoComienzoFinal = true;
-                console.log("---- [X] Tiene @ o . al comienzo o final.");
-            }
-        }
-        if(caracterEmail === "@"){
-            if(cantidadArrobas > 1){
-                console.log("---- [X] Tiene más de un '@'.");
-            }
-            cantidadArrobas++;
-        }
-        if(caracterEmail === "."){
-            if(cantidadArrobas >= 1){
-                puntoDespuesDeArroba = true;
-                console.log("---- [O] Tiene un '.' despues del arroba.")
-            }
-        }
-        if(j === lengthEmail-1){
-            if(esLetra(caracterEmail) === false){
-                terminaEnEspecial = true;
-                console.log("---- [X] Termina en caracter especial.");
-            }
-        }
+    if (length(email_separado) > 2) {
+        console.log("---- [X] Tiene más de un '@'.");
+        return false;
     }
-    if(cantidadArrobas === 1 && puntoDespuesDeArroba === true && terminaEnEspecial === false && arrobaOPuntoComienzoFinal === false){
-        console.log("---- [VERIFICADO] Email verificado.");
-        return true;
-    }else{
-        console.log("---- [INVALIDO] Email NO verificado.");
-        return false
+    if (email[0] === '@' || email[0] === '.' || esLetra(email[lengthEmail - 1]) === false) {
+        console.log("---- [X] Tiene @ o . al comienzo o final (o al final un caracter especial).");
+        return false;
     }
+    if(includes(email_parte2,".") === false){
+        console.log("---- [X] No tiene '.' después del arroba.");
+        return false;
+    }
+    if(length(email_separado) > 2){
+        console.log("---- [X] Tiene más de un '@'.");
+        return false;
+    }
+    return true;
 }
 
 function validarPassword(password){
-
+    if(length(password) < 8){
+        console.log("---- [X] Tiene menos de 8 caracteres.");
+        return false;
+    }
+    for (let i = 0; i < length(password); i++){
+        const caracter = password[i];
+        if(esLetra(caracter) === false || esNumero(caracter) === false){
+            return false;
+        }
+    }
+    return true;
 }
 
-function validarEmailContrasenia(array){
+function validarEmailPassword(array){
     const longitudArray = length(array);
     for (let i = 0; i < longitudArray; i++) {
+        
         const usuario = array[i];
         const email = usuario.email;
         const password = usuario.password
-        
-        const lengthPass = length(password);
 
-        console.log(`Usuario ${i}:`);
+        console.log(`Email: ${email}:`);
+        if(validarEmail(email) === true){
+            console.log("-- [VERIFICADO] Email verificado.");
+        }else{
+            console.log("-- [INVALIDO] Email NO verificado.");
+        }
 
-        console.log(`-- Email: ${email}:`)
-        console.log(validarEmail(email));
-
-        console.log(`-- Password: ${password}:`)
-        console.log(validarPassword(password));
+        console.log(`Password: ${password}:`)
+        if(validarPassword(password) === true){
+            console.log("-- [VERIFICADO] Contraseña verificada.");
+        }else{
+            console.log("-- [INVALIDO] Cotnraseña NO verificada.");
+        }
 
         console.log("");
     }
@@ -123,11 +157,10 @@ function validarEmailContrasenia(array){
 
 const usuarios = [
     { email: "juan@example.com", password: "abc12345" },
-    { email: "mal@correo$", password: "1234567" },
+    { email: "mal@correo", password: "1234567" },
     { email: "@nada.com", password: "abcd" },
+    { email: "mal@correo", password: "1234567" },
+    
 ];
 
-validarEmailContrasenia(usuarios);
-
-
-
+validarEmailPassword(usuarios);
