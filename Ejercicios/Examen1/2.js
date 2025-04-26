@@ -39,7 +39,9 @@ const usuarios = [
 ];
 */
 
-const { length } = require('./1');
+const { contarElementos } = require('./1');
+
+const length = contarElementos;
 
 function esLetra(caracter){
     let arrayLetras = ["a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","p","q","r","s","t","u","v","w","x","y","z","A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z"];
@@ -68,11 +70,9 @@ function split(string, separador){
     for (let i = 0; i < length(string); i++){
         const caracter = string[i];
         if(caracter === separador){
-            if (string_separado != "") {
-                array[contadorArray] = string_separado;
-                string_separado = "";
-                contadorArray++;
-            } 
+            array[contadorArray] = string_separado;
+            string_separado = "";
+            contadorArray++;
         }else{
             string_separado += caracter;
         }
@@ -93,13 +93,20 @@ function includes(array, elemento){
 function validarEmail(email){
     const lengthEmail = length(email);
     const email_separado = split(email,"@");
-    const email_parte1 = email_separado[0];
-    const email_parte2 = email_separado[1];
+
+    if (length(email_separado) < 2) {
+        console.log("---- [X] No hay 2 partes separadas por @.");
+        return false;
+    }
 
     if (length(email_separado) > 2) {
         console.log("---- [X] Tiene más de un '@'.");
         return false;
     }
+
+    const email_parte1 = email_separado[0];
+    const email_parte2 = email_separado[1];
+
     if (email[0] === '@' || email[0] === '.' || esLetra(email[lengthEmail - 1]) === false) {
         console.log("---- [X] Tiene @ o . al comienzo o final (o al final un caracter especial).");
         return false;
@@ -108,24 +115,33 @@ function validarEmail(email){
         console.log("---- [X] No tiene '.' después del arroba.");
         return false;
     }
-    if(length(email_separado) > 2){
-        console.log("---- [X] Tiene más de un '@'.");
-        return false;
-    }
     return true;
 }
 
 function validarPassword(password){
+    let tieneLetra = false;
+    let tieneNumero = false;
+
     if(length(password) < 8){
         console.log("---- [X] Tiene menos de 8 caracteres.");
         return false;
     }
+    
     for (let i = 0; i < length(password); i++){
         const caracter = password[i];
-        if(esLetra(caracter) === false || esNumero(caracter) === false){
-            return false;
+        if(esLetra(caracter) === true){
+            tieneLetra = true;
+        }
+        if(esNumero(caracter) === true){
+            tieneNumero = true;
         }
     }
+
+    if (!tieneLetra || !tieneNumero) {
+        console.log("---- [X] No contiene al menos una letra y un número.");
+        return false;
+    }
+
     return true;
 }
 
@@ -156,11 +172,16 @@ function validarEmailPassword(array){
 }
 
 const usuarios = [
-    { email: "juan@example.com", password: "abc12345" },
-    { email: "mal@correo", password: "1234567" },
-    { email: "@nada.com", password: "abcd" },
-    { email: "mal@correo", password: "1234567" },
-    
+    { email: "usuario@example.com", password: "clave123" },      // válido
+    { email: "malcorreo.com", password: "abc12345" },             // sin @
+    { email: "mal@@ejemplo.com", password: "abc12345" },          // dos @
+    { email: ".usuario@ejemplo.com", password: "abc12345" },      // . al principio
+    { email: "usuario@ejemplo.com.", password: "abc12345" },      // . al final
+    { email: "usuario@ejemplo", password: "abc12345" },           // sin . luego del @
+    { email: "usuario@example.com", password: "12345678" },       // sin letras
+    { email: "usuario@example.com", password: "abcdefgh" },       // sin números
+    { email: "usuario@example.com", password: "abc1" },           // menos de 8 caracteres
 ];
+
 
 validarEmailPassword(usuarios);

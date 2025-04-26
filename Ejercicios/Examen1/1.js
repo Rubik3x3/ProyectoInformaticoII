@@ -17,7 +17,7 @@ contarElementos([1, 2, 3]);    // 3
 contarElementos("");           // 0
 contarElementos([]);           // 0
 */
-function length(array){
+function contarElementos(array){
     let count = 0;
     while(array[count] != undefined){
         count++;
@@ -26,5 +26,5 @@ function length(array){
 }
 
 module.exports = {
-    length,
+    contarElementos,
 }
